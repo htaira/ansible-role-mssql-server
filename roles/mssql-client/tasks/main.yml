@@ -1,0 +1,18 @@
+---
+- name: Download repo file of SQL Server Tools GA
+  get_url:
+    url: "https://packages.microsoft.com/config/rhel/7/prod.repo"
+    dest: "/etc/yum.repos.d/mssql-prod.repo"
+
+- name: Install SQL Server Tools
+  package:
+    name: mssql-tools
+    state: latest
+  environment:
+    ACCEPT_EULA: "y"
+
+- name: Install unixODBC-devel
+  package:
+    name: unixODBC-devel
+    state: latest
+

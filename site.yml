@@ -1,0 +1,7 @@
+---
+- name: Playbook for SQL Server 2017 for Linux
+  hosts: all
+  become: true
+  roles:
+    - mssql-server
+    - mssql-client

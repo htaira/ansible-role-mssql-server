@@ -1,0 +1,33 @@
+---
+- name: Download repo file of SQL Server for Linux GA
+  get_url:
+    url: "https://packages.microsoft.com/config/rhel/7/mssql-server-2017.repo"
+    dest: "/etc/yum.repos.d/mssql-server-2017.repo"
+
+- name: Install SQL Server for Linux
+  package:
+    name: mssql-server
+    state: latest
+
+- name: Configure Firewalld
+  firewalld:
+    port: 1433/tcp
+    permanent: true
+    state: enabled
+  notify: reload firewalld
+
+- name: Execute mssql-conf
+  command: /opt/mssql/bin/mssql-conf -n setup
+  args:
+    creates: /var/opt/mssql/mssql.conf
+  environment:
+    ACCEPT_EULA: "y"
+    MSSQL_PID: "{{ product_id }}"
+    MSSQL_SA_PASSWORD: "{{ sa_password }}"
+
+- name: Configure autostart at booting system
+  service:
+    name: mssql-server
+    enabled: yes
+    state: started
+
